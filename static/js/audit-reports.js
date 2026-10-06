@@ -7,6 +7,7 @@ var auditReports = (function () {
   var _pageSize = 25;
   var _totalPages = 1;
   var _allRows = [];
+  var _summary = { actions: [], modules: [] };
 
   var ACTION_LABELS = {
     create: 'إنشاء',
@@ -20,14 +21,14 @@ var auditReports = (function () {
   };
 
   var ACTION_COLORS = {
-    create: '#059669',
-    update: '#1967d2',
-    delete: '#dc2626',
-    login: '#7c3aed',
-    logout: '#6b7280',
-    approve: '#059669',
-    reject: '#dc2626',
-    other: '#9ca3af',
+    create: '#318a7d',
+    update: '#3d7f9a',
+    delete: '#d95f49',
+    login: '#6f8293',
+    logout: '#8a9690',
+    approve: '#56846b',
+    reject: '#c94f4f',
+    other: '#8a9690',
   };
 
   function init() {
@@ -63,7 +64,12 @@ var auditReports = (function () {
     var dateTo = (document.getElementById('rpt-date-to') || {}).value || '';
     if (dateTo) params.set('date_to', dateTo);
 
-    apiFetch(API_BASE + '/audit-logs?' + params.toString())
+    var body = document.getElementById('reportTableBody');
+    var info = document.getElementById('rpt-pagination-info');
+    if (body) body.innerHTML = '<tr><td colspan="7" class="report-table-state"><i class="fas fa-spinner fa-spin"></i> جارٍ تحميل السجلات...</td></tr>';
+    if (info) info.textContent = 'جارٍ تطبيق الفلاتر';
+
+    return apiFetch(API_BASE + '/audit-logs?' + params.toString())
       .then(function (r) {
         if (r.status === 401) { window.location.href = '/login'; throw new Error('unauthorized'); }
         if (!r.ok) throw new Error(r.status);
@@ -75,13 +81,17 @@ var auditReports = (function () {
         var meta = payload.meta || {};
         _allRows = items;
         _totalPages = meta.pages || 1;
+        _summary = meta.summary || { actions: [], modules: [] };
         _renderStats(items.length, meta.total || 0);
+        _renderBreakdowns();
         _renderTable(items);
         _renderPagination(meta);
       })
       .catch(function () {
         _allRows = [];
+        _summary = { actions: [], modules: [] };
         _renderStats(0, 0);
+        _renderBreakdowns();
         _renderTable([]);
         _renderPagination({ page: 1, pages: 1 });
         showToast('فشل تحميل سجل التدقيق', 'error');
@@ -91,11 +101,37 @@ var auditReports = (function () {
   function _renderStats(count, total) {
     var statsEl = document.getElementById('reportStats');
     if (!statsEl) return;
-    statsEl.style.display = '';
+    var actionTypes = (_summary.actions || []).length;
+    var topAction = (_summary.actions || []).slice().sort(function (a, b) { return b.total - a.total; })[0];
     statsEl.innerHTML =
-      '<div class="set-stat-card"><div class="set-stat-icon" style="background:linear-gradient(135deg,#e8f0fe,#c6d9f7)"><i class="fas fa-list" style="color:#1967d2"></i></div><div class="set-stat-info"><div class="set-stat-value">' + total + '</div><div class="set-stat-label">إجمالي السجلات</div></div></div>' +
-      '<div class="set-stat-card"><div class="set-stat-icon" style="background:linear-gradient(135deg,#e6f7ee,#b8e6cc)"><i class="fas fa-clipboard-list" style="color:#1e8e3e"></i></div><div class="set-stat-info"><div class="set-stat-value">' + count + '</div><div class="set-stat-label">سجل في هذه الصفحة</div></div></div>' +
-      '<div class="set-stat-card"><div class="set-stat-icon" style="background:linear-gradient(135deg,#fef7e0,#fde9b3)"><i class="fas fa-shield-alt" style="color:#e37400"></i></div><div class="set-stat-info"><div class="set-stat-value">تدقيق</div><div class="set-stat-label">سجل النشاطات</div></div></div>';
+      '<article class="report-summary-card"><span class="report-summary-icon report-summary-coral"><i class="fas fa-list-check"></i></span><div><span>نتائج مطابقة</span><strong>' + Number(total).toLocaleString('ar') + '</strong><small>وفق الفلاتر الحالية</small></div></article>' +
+      '<article class="report-summary-card"><span class="report-summary-icon report-summary-teal"><i class="fas fa-file-lines"></i></span><div><span>في الصفحة</span><strong>' + Number(count).toLocaleString('ar') + '</strong><small>من ' + Number(_totalPages).toLocaleString('ar') + ' صفحة</small></div></article>' +
+      '<article class="report-summary-card"><span class="report-summary-icon report-summary-lime"><i class="fas fa-shapes"></i></span><div><span>أنواع الإجراءات</span><strong>' + Number(actionTypes).toLocaleString('ar') + '</strong><small>ضمن النتائج المطابقة</small></div></article>' +
+      '<article class="report-summary-card"><span class="report-summary-icon report-summary-blue"><i class="fas fa-arrow-trend-up"></i></span><div><span>الأكثر تكراراً</span><strong>' + escapeHtml(topAction ? (ACTION_LABELS[topAction.action] || topAction.action) : '—') + '</strong><small>' + (topAction ? Number(topAction.total).toLocaleString('ar') + ' حدث' : 'لا توجد بيانات') + '</small></div></article>';
+  }
+
+  function _renderBreakdowns() {
+    var actionsEl = document.getElementById('report-action-breakdown');
+    var modulesEl = document.getElementById('report-module-breakdown');
+    var actions = _summary.actions || [];
+    var modules = _summary.modules || [];
+    var actionTotal = actions.reduce(function (sum, item) { return sum + Number(item.total || 0); }, 0);
+    if (actionsEl) {
+      actionsEl.innerHTML = actionTotal ? actions.map(function (item) {
+        var value = Number(item.total || 0);
+        var percent = Math.round(value / actionTotal * 100);
+        return '<div class="report-breakdown-item"><div class="report-breakdown-label"><span><i style="--breakdown-color:' + (ACTION_COLORS[item.action] || '#8a9690') + '"></i>' + escapeHtml(ACTION_LABELS[item.action] || item.action) + '</span><strong>' + value.toLocaleString('ar') + '</strong></div><div class="report-breakdown-track"><span style="width:' + percent + '%;--breakdown-color:' + (ACTION_COLORS[item.action] || '#8a9690') + '"></span></div></div>';
+      }).join('') : '<div class="report-analysis-empty">لا توجد إجراءات مطابقة</div>';
+    }
+    if (modulesEl) {
+      var maxModule = Math.max.apply(null, modules.map(function (item) { return Number(item.total) || 0; }).concat([1]));
+      modulesEl.innerHTML = modules.length ? modules.map(function (item, index) {
+        var value = Number(item.total || 0);
+        var percent = Math.round(value / maxModule * 100);
+        var name = item.module || 'غير محدد';
+        return '<div class="report-breakdown-item"><div class="report-breakdown-label"><span class="report-module-name"><b>' + (index + 1) + '</b>' + escapeHtml(name) + '</span><strong>' + value.toLocaleString('ar') + '</strong></div><div class="report-breakdown-track"><span class="module-breakdown-bar" style="width:' + percent + '%"></span></div></div>';
+      }).join('') : '<div class="report-analysis-empty">لا توجد وحدات ضمن النتائج</div>';
+    }
   }
 
   function _actionBadge(action) {
@@ -175,6 +211,15 @@ var auditReports = (function () {
     debounce(load, 300)();
   }
 
+  function resetFilters() {
+    ['rpt-search', 'rpt-action', 'rpt-date-from', 'rpt-date-to'].forEach(function (id) {
+      var field = document.getElementById(id);
+      if (field) field.value = '';
+    });
+    _currentPage = 1;
+    load();
+  }
+
   function printReport() {
     var rows = _allRows;
     if (rows.length === 0) { showToast('لا توجد بيانات للطباعة', 'error'); return; }
@@ -202,11 +247,11 @@ var auditReports = (function () {
     win.print();
   }
 
-  function exportCSV() {
-    if (_allRows.length === 0) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
+  function _exportRows(rows) {
+    if (rows.length === 0) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
     var cols = ['المستخدم', 'الإجراء', 'الوحدة', 'الوصف', 'IP', 'التاريخ'];
     var lines = [cols.join(',')];
-    _allRows.forEach(function (e) {
+    rows.forEach(function (e) {
       var date = e.created_at ? new Date(e.created_at) : null;
       var dateStr = date ? date.toLocaleDateString('ar') + ' ' + date.toLocaleTimeString('ar') : '';
       var row = [e.user_name || '', ACTION_LABELS[e.action] || e.action, e.module || '', e.object_repr || '', e.ip_address || '', dateStr];
@@ -215,11 +260,34 @@ var auditReports = (function () {
     var blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'audit-log-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.download = 'madar-audit-report-' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
+  }
+
+  async function exportCSV() {
+    if (!_allRows.length) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
+    var rows = [];
+    try {
+      for (var page = 1; ; page++) {
+        var params = new URLSearchParams();
+        params.set('page', page);
+        params.set('page_size', 100);
+        ['search', 'action', 'date_from', 'date_to'].forEach(function (key) {
+          var field = document.getElementById('rpt-' + key.replace('_', '-'));
+          if (field && field.value) params.set(key, field.value);
+        });
+        var response = await apiFetchJSON(API_BASE + '/audit-logs?' + params.toString());
+        var pageRows = (response.data && response.data.items) || [];
+        rows = rows.concat(pageRows);
+        if (pageRows.length < 100) break;
+      }
+      _exportRows(rows);
+    } catch (error) {
+      showToast('تعذر تحميل جميع النتائج للتصدير', 'error');
+    }
   }
 
   return {
@@ -227,6 +295,7 @@ var auditReports = (function () {
     load: load,
     goTo: goTo,
     filterLocal: filterLocal,
+    resetFilters: resetFilters,
     printReport: printReport,
     exportCSV: exportCSV,
   };

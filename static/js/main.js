@@ -293,11 +293,15 @@ function showToast(message, type) {
 
 
 async function loadDashboardStats() {
+  var activityChart = document.getElementById('dashboard-activity-chart');
+  var actionBreakdown = document.getElementById('dashboard-action-breakdown');
+  var auditTbody = document.getElementById('dash-audit-tbody');
+  if (activityChart) activityChart.innerHTML = '<div class="dashboard-chart-state">جارٍ تحميل مؤشرات النشاط...</div>';
   try {
     const data = await apiFetchJSON(API_BASE + '/dashboard/stats');
     function setStat(id, val) {
       var el = document.getElementById(id);
-      if (el) el.textContent = val || 0;
+      if (el) el.textContent = Number(val || 0).toLocaleString('ar');
     }
     setStat('stat-total-users', data.total_users);
     setStat('stat-active-users', data.active_users);
@@ -305,16 +309,65 @@ async function loadDashboardStats() {
     setStat('stat-audit-total', data.total_audit_events);
 
     // Latest audit activity
-    var auditTbody = document.getElementById('dash-audit-tbody');
     if (auditTbody && data.latest_audit) {
-      auditTbody.innerHTML = data.latest_audit.map(function(log) {
+      auditTbody.innerHTML = data.latest_audit.length ? data.latest_audit.map(function(log) {
         var ts = log.created_at ? new Date(log.created_at).toLocaleString('ar') : '—';
-        return '<tr><td>' + escapeHtml(log.user_name || '—') + '</td><td>' + escapeHtml(log.action_label || log.action || '—') + '</td><td>' + escapeHtml(log.module || '—') + '</td><td>' + escapeHtml(log.object_repr || '—') + '</td><td style="font-size:12px;color:#6b7280;">' + ts + '</td></tr>';
-      }).join('');
+        return '<tr><td><strong>' + escapeHtml(log.user_name || '—') + '</strong></td><td><span class="dashboard-action-tag">' + escapeHtml(log.action_label || log.action || '—') + '</span></td><td>' + escapeHtml(log.module || '—') + '</td><td>' + escapeHtml(log.object_repr || '—') + '</td><td class="dashboard-date-cell">' + ts + '</td></tr>';
+      }).join('') : '<tr><td colspan="5" class="dashboard-table-state">لا توجد نشاطات مسجلة حتى الآن</td></tr>';
     }
+    _renderDashboardActivity(data.audit_activity || []);
+    _renderDashboardActions(data.audit_actions || {});
   } catch (e) {
+    if (activityChart) activityChart.innerHTML = '<div class="dashboard-chart-state">تعذر تحميل مؤشرات النشاط</div>';
+    if (actionBreakdown) actionBreakdown.innerHTML = '<div class="dashboard-chart-state">تعذر تحميل الملخص</div>';
+    if (auditTbody) auditTbody.innerHTML = '<tr><td colspan="5" class="dashboard-table-state">تعذر تحميل النشاطات</td></tr>';
     showToast('فشل تحميل بيانات لوحة التحكم', 'error');
   }
+}
+
+const DASHBOARD_ACTION_LABELS = {
+  create: 'إنشاء', update: 'تحديث', delete: 'حذف', login: 'دخول', logout: 'خروج',
+  approve: 'اعتماد', reject: 'رفض', other: 'أخرى'
+};
+
+function _renderDashboardActivity(days) {
+  var container = document.getElementById('dashboard-activity-chart');
+  if (!container) return;
+  if (!days.length) {
+    container.innerHTML = '<div class="dashboard-chart-state">لا تتوفر بيانات لهذه الفترة</div>';
+    return;
+  }
+  var max = Math.max.apply(null, days.map(function (item) { return Number(item.total) || 0; }).concat([1]));
+  container.innerHTML = days.map(function (item) {
+    var date = new Date(item.date + 'T12:00:00');
+    var value = Number(item.total) || 0;
+    var height = Math.max(4, Math.round(value / max * 100));
+    var label = date.toLocaleDateString('ar', { weekday: 'short' });
+    var fullDate = date.toLocaleDateString('ar', { day: 'numeric', month: 'long' });
+    return '<div class="activity-day" title="' + escapeHtml(fullDate) + '">' +
+      '<span class="activity-day-value">' + value.toLocaleString('ar') + '</span>' +
+      '<div class="activity-bar-track"><span class="activity-bar" style="height:' + height + '%"></span></div>' +
+      '<span class="activity-day-label">' + escapeHtml(label) + '</span></div>';
+  }).join('');
+}
+
+function _renderDashboardActions(actions) {
+  var container = document.getElementById('dashboard-action-breakdown');
+  if (!container) return;
+  var items = Object.keys(actions).map(function (key) {
+    return { key: key, label: DASHBOARD_ACTION_LABELS[key] || key, total: Number(actions[key]) || 0 };
+  }).sort(function (left, right) { return right.total - left.total; });
+  var total = items.reduce(function (sum, item) { return sum + item.total; }, 0);
+  if (!total) {
+    container.innerHTML = '<div class="dashboard-chart-state">لا توجد إجراءات مسجلة خلال الفترة</div>';
+    return;
+  }
+  var colors = ['#318a7d', '#d95f49', '#6d8297', '#9a8a48', '#6f8b55', '#8c6b86'];
+  container.innerHTML = '<div class="action-total"><strong>' + total.toLocaleString('ar') + '</strong><span>إجمالي حدث خلال 7 أيام</span></div>' +
+    items.map(function (item, index) {
+      var percent = Math.round(item.total / total * 100);
+      return '<div class="action-breakdown-row"><div class="action-breakdown-label"><span><i style="--action-color:' + colors[index % colors.length] + '"></i>' + escapeHtml(item.label) + '</span><strong>' + item.total.toLocaleString('ar') + '</strong></div><div class="action-breakdown-track"><span style="width:' + percent + '%;--action-color:' + colors[index % colors.length] + '"></span></div></div>';
+    }).join('');
 }
 
 // ============================================================
