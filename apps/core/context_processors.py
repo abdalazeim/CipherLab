@@ -26,8 +26,8 @@ def site_context(request):
         pass
 
     return {
-        "site_title": getattr(settings, "SITE_TITLE", "Django Enterprise Template"),
-        "site_subtitle": getattr(settings, "SITE_SUBTITLE", "Enterprise Starter"),
+        "site_title": getattr(settings, "SITE_TITLE", "مدار"),
+        "site_subtitle": getattr(settings, "SITE_SUBTITLE", "منصة العمليات المؤسسية"),
         "html_lang": lang,
         "html_dir": "rtl" if lang.startswith("ar") else "ltr",
         "app_font_family": font_family,

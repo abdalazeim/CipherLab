@@ -233,8 +233,8 @@ USE_TZ = True
 # ==============================================================================
 APP_FONT_FAMILY = env("APP_FONT_FAMILY")
 
-SITE_TITLE = env("SITE_TITLE", default="نظام إدارة عام")
-SITE_SUBTITLE = env("SITE_SUBTITLE", default="Enterprise Starter")
+SITE_TITLE = env("SITE_TITLE", default="مدار")
+SITE_SUBTITLE = env("SITE_SUBTITLE", default="منصة العمليات المؤسسية")
 
 # ==============================================================================
 # STATIC & MEDIA FILES
