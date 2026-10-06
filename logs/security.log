@@ -97,3 +97,5 @@ Traceback (most recent call last):
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
 2026-10-06 19:39:07 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 19:40:24 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 19:41:46 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
