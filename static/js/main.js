@@ -126,6 +126,7 @@ function showPage(page) {
   var basePage = page.indexOf('/') !== -1 ? page.split('/')[0] : page;
   var pageEl = document.getElementById('page-' + basePage);
   if (pageEl) pageEl.classList.add('active');
+  window.scrollTo(0, 0);
   var navEl = document.getElementById('nav-' + basePage);
   if (navEl) navEl.classList.add('active');
   var subNavEl = document.getElementById('nav-' + page);

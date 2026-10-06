@@ -168,9 +168,9 @@
     <div id="reportFilters" class="data-card report-filters">
       <div class="report-filter-grid">
         <label class="report-filter-field report-search-field" for="rpt-search"><span>بحث في السجل</span><span class="report-search-control"><i class="fas fa-search"></i><input type="search" id="rpt-search" class="form-control" placeholder="اسم المستخدم، الوحدة، أو الوصف" oninput="auditReports.filterLocal()"></span></label>
-        <label class="report-filter-field" for="rpt-action"><span>نوع الإجراء</span><select id="rpt-action" class="form-select" onchange="auditReports.load()"></select></label>
-        <label class="report-filter-field" for="rpt-date-from"><span>من تاريخ</span><input type="date" id="rpt-date-from" class="form-control" onchange="auditReports.load()"></label>
-        <label class="report-filter-field" for="rpt-date-to"><span>إلى تاريخ</span><input type="date" id="rpt-date-to" class="form-control" onchange="auditReports.load()"></label>
+        <label class="report-filter-field" for="rpt-action"><span>نوع الإجراء</span><select id="rpt-action" class="form-select" onchange="auditReports.filterChanged()"></select></label>
+        <label class="report-filter-field" for="rpt-date-from"><span>من تاريخ</span><input type="date" id="rpt-date-from" class="form-control" onchange="auditReports.filterChanged()"></label>
+        <label class="report-filter-field" for="rpt-date-to"><span>إلى تاريخ</span><input type="date" id="rpt-date-to" class="form-control" onchange="auditReports.filterChanged()"></label>
         <button class="btn btn-outline-secondary report-reset" type="button" onclick="auditReports.resetFilters()"><i class="fas fa-filter-circle-xmark"></i> مسح الفلاتر</button>
       </div>
     </div>
@@ -749,7 +749,7 @@
   <script src="{% static 'vendor/html2canvas/html2canvas.min.js' %}"></script>
   <script src="{% static 'vendor/jspdf/jspdf.umd.min.js' %}"></script>
 
-<script src="{% static 'js/audit-reports.js' %}?v=1"></script>
+<script src="{% static 'js/audit-reports.js' %}?v=3"></script>
 <script src="{% static 'js/modules/cipherlab.js' %}?v=1"></script>
 <script src="{% static 'js/report-settings.js' %}?v=1"></script>
 <script src="{% static 'js/accounting-settings.js' %}?v=1"></script>

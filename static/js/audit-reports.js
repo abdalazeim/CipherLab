@@ -211,6 +211,11 @@ var auditReports = (function () {
     debounce(load, 300)();
   }
 
+  function filterChanged() {
+    _currentPage = 1;
+    load();
+  }
+
   function resetFilters() {
     ['rpt-search', 'rpt-action', 'rpt-date-from', 'rpt-date-to'].forEach(function (id) {
       var field = document.getElementById(id);
@@ -295,6 +300,7 @@ var auditReports = (function () {
     load: load,
     goTo: goTo,
     filterLocal: filterLocal,
+    filterChanged: filterChanged,
     resetFilters: resetFilters,
     printReport: printReport,
     exportCSV: exportCSV,
