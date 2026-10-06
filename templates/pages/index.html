@@ -101,125 +101,59 @@
     <div class="section-header">
       <div>
         <div class="section-title">لوحة التحكم</div>
-        <div class="section-subtitle" id="dash-subtitle">نظرة واضحة على نشاط المنصة اليوم</div>
+        <div class="section-subtitle" id="dash-subtitle">نظرة تشغيلية على المستخدمين والنشاط خلال آخر 7 أيام</div>
       </div>
+      <button class="btn btn-outline-secondary btn-sm" type="button" onclick="loadDashboardStats()" title="تحديث المؤشرات"><i class="fas fa-rotate-right"></i> تحديث</button>
     </div>
 
-    <!-- Stats Cards: System -->
-    <div class="row g-3 mb-4">
-      <div class="col-6 col-xl-3">
-        <div class="stat-card">
-          <div class="stat-icon icon-blue"><i class="fas fa-users"></i></div>
-          <div class="stat-value" id="stat-total-users">0</div>
-          <div class="stat-label">إجمالي المستخدمين</div>
-        </div>
-      </div>
-      <div class="col-6 col-xl-3">
-        <div class="stat-card">
-          <div class="stat-icon icon-green"><i class="fas fa-user-check"></i></div>
-          <div class="stat-value" id="stat-active-users">0</div>
-          <div class="stat-label">مستخدمون نشطون</div>
-        </div>
-      </div>
-      <div class="col-6 col-xl-3">
-        <div class="stat-card">
-          <div class="stat-icon icon-gold"><i class="fas fa-clipboard-list"></i></div>
-          <div class="stat-value" id="stat-audit-today">0</div>
-          <div class="stat-label">أحداث التدقيق اليوم</div>
-        </div>
-      </div>
-      <div class="col-6 col-xl-3">
-        <div class="stat-card">
-          <div class="stat-icon icon-purple"><i class="fas fa-history"></i></div>
-          <div class="stat-value" id="stat-audit-total">0</div>
-          <div class="stat-label">إجمالي أحداث التدقيق</div>
-        </div>
-      </div>
+    <div class="dashboard-metrics">
+      <article class="dashboard-metric">
+        <span class="dashboard-metric-icon metric-coral"><i class="fas fa-users"></i></span>
+        <div><span class="dashboard-metric-label">إجمالي المستخدمين</span><strong id="stat-total-users">—</strong><span class="dashboard-metric-note">حسابات مسجلة</span></div>
+      </article>
+      <article class="dashboard-metric">
+        <span class="dashboard-metric-icon metric-teal"><i class="fas fa-user-check"></i></span>
+        <div><span class="dashboard-metric-label">مستخدمون نشطون</span><strong id="stat-active-users">—</strong><span class="dashboard-metric-note">حسابات مفعّلة</span></div>
+      </article>
+      <article class="dashboard-metric">
+        <span class="dashboard-metric-icon metric-lime"><i class="fas fa-bolt"></i></span>
+        <div><span class="dashboard-metric-label">نشاط اليوم</span><strong id="stat-audit-today">—</strong><span class="dashboard-metric-note">حدث تدقيق مسجل</span></div>
+      </article>
+      <article class="dashboard-metric">
+        <span class="dashboard-metric-icon metric-blue"><i class="fas fa-list-check"></i></span>
+        <div><span class="dashboard-metric-label">إجمالي النشاط</span><strong id="stat-audit-total">—</strong><span class="dashboard-metric-note">كل الأحداث المسجلة</span></div>
+      </article>
     </div>
 
-    <!-- Latest Audit Activity -->
-    <div class="row g-3 mb-4">
-      <div class="col-12">
-        <div class="data-card">
-          <div class="data-card-header">
-            <div class="data-card-title"><i class="fas fa-history"></i> أحدث نشاطات النظام</div>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="table table-sm" id="dash-audit-table" style="font-size:13px;margin:0;">
-              <thead style="background:#f1f5f9;"><tr>
-                <th>المستخدم</th>
-                <th>الإجراء</th>
-                <th>الوحدة</th>
-                <th>الوصف</th>
-                <th>التاريخ</th>
-              </tr></thead>
-              <tbody id="dash-audit-tbody"></tbody>
-            </table>
-          </div>
+    <div class="dashboard-analytics">
+      <section class="data-card dashboard-chart-card" aria-labelledby="dashboard-activity-title">
+        <div class="data-card-header">
+          <div><div class="data-card-title" id="dashboard-activity-title"><i class="fas fa-chart-column"></i> وتيرة النشاط</div><div class="dashboard-card-note">عدد أحداث التدقيق لكل يوم</div></div>
+          <span class="dashboard-period"><i class="fas fa-calendar-week"></i> آخر 7 أيام</span>
         </div>
+        <div class="dashboard-chart" id="dashboard-activity-chart" role="img" aria-label="مخطط أحداث التدقيق خلال آخر سبعة أيام"></div>
+      </section>
+      <section class="data-card dashboard-breakdown-card" aria-labelledby="dashboard-actions-title">
+        <div class="data-card-header"><div><div class="data-card-title" id="dashboard-actions-title"><i class="fas fa-chart-pie"></i> توزيع الإجراءات</div><div class="dashboard-card-note">أحداث الفترة نفسها</div></div></div>
+        <div class="dashboard-actions" id="dashboard-action-breakdown"></div>
+      </section>
+    </div>
+
+    <section class="data-card dashboard-recent-card">
+      <div class="data-card-header">
+        <div><div class="data-card-title"><i class="fas fa-clock-rotate-left"></i> أحدث النشاطات</div><div class="dashboard-card-note">آخر الأحداث المسجلة على المنصة</div></div>
+        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPage('reports')">عرض سجل التدقيق <i class="fas fa-arrow-left"></i></button>
+      </div>
+      <div class="table-wrapper">
+        <table class="custom-table" id="dash-audit-table">
+          <thead><tr><th>المستخدم</th><th>الإجراء</th><th>الوحدة</th><th>الوصف</th><th>التاريخ</th></tr></thead>
+          <tbody id="dash-audit-tbody"><tr><td colspan="5" class="dashboard-table-state">جارٍ تحميل النشاط...</td></tr></tbody>
+        </table>
       </div>
     </div>
   </div>
 
   <!-- ===== REPORTS PAGE ===== -->
-  <!-- ===== مديول -1 MODULE PAGE ===== -->
-  <div class="page-content" id="page-module_1">
-    <div class="section-header">
-      <div>
-        <div class="section-title">مديول -1</div>
-        <div class="section-subtitle">إدارة سجلات مديول -1</div>
-      </div>
-      <div class="btn-toolbar-wrap">
-        <button class="btn btn-accent btn-sm" onclick="openModule1Modal()"><i class="fas fa-plus me-1"></i> إضافة</button>
-      </div>
-    </div>
-    <div class="data-card">
-      <div style="overflow-x:auto;">
-        <table class="table table-sm" id="module_1-table" style="font-size:13px;margin:0;">
-          <thead style="background:#f1f5f9;"><tr>
-            <th>الكود</th><th>الاسم</th><th>الوصف</th><th>الكمية</th><th>الحالة</th><th>إجراءات</th>
-          </tr></thead>
-          <tbody id="module_1-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- مديول -1 Add Modal -->
-    <div class="modal fade" id="module_1Modal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">إضافة مديول -1</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-          </div>
-          <div class="modal-body">
-            <form id="module_1Form">
-              <div class="mb-3">
-                <label class="form-label">الكود <span class="required">*</span></label>
-                <input type="text" class="form-control" id="module_1-code" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">الاسم <span class="required">*</span></label>
-                <input type="text" class="form-control" id="module_1-name" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">الوصف</label>
-                <textarea class="form-control" id="module_1-desc" rows="2"></textarea>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">الكمية</label>
-                <input type="number" class="form-control" id="module_1-qty" value="0" min="0">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
-            <button type="button" class="btn btn-accent" onclick="saveModule1Item()"><i class="fas fa-save me-1"></i> حفظ</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="page-content" id="page-reports">
     <div class="section-header">
       <div>
@@ -227,38 +161,28 @@
         <div class="section-subtitle">تقارير وإحصائيات سجل التدقيق</div>
       </div>
       <div class="btn-toolbar-wrap">
-        <button class="btn btn-outline-secondary btn-sm" onclick="auditReports.printReport()" title="طباعة"><i class="fas fa-print"></i> طباعة</button>
-        <button class="btn btn-outline-secondary btn-sm" onclick="auditReports.exportCSV()" title="تصدير CSV"><i class="fas fa-file-csv"></i> تصدير</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="auditReports.printReport()" title="طباعة النتائج الحالية"><i class="fas fa-print"></i> طباعة</button>
+        <button class="btn btn-accent btn-sm" onclick="auditReports.exportCSV()" title="تصدير جميع النتائج المطابقة للفلاتر"><i class="fas fa-file-csv"></i> تصدير النتائج</button>
       </div>
     </div>
-    <!-- Report Filters -->
-    <div id="reportFilters" class="data-card" style="margin-bottom:12px; padding:12px 16px">
-      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
-        <div id="rpt-search-wrap">
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px">بحث</label>
-          <input type="text" id="rpt-search" class="form-control form-control-sm" placeholder="بحث في المستخدم أو الوحدة أو الوصف..." oninput="auditReports.filterLocal()" style="min-width:200px">
-        </div>
-        <div>
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px">الإجراء</label>
-          <select id="rpt-action" class="form-control form-control-sm" onchange="auditReports.load()" style="min-width:140px"></select>
-        </div>
-        <div id="rpt-date-from-wrap">
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px">من تاريخ</label>
-          <input type="date" id="rpt-date-from" class="form-control form-control-sm" onchange="auditReports.load()">
-        </div>
-        <div id="rpt-date-to-wrap">
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px">إلى تاريخ</label>
-          <input type="date" id="rpt-date-to" class="form-control form-control-sm" onchange="auditReports.load()">
-        </div>
+    <div id="reportFilters" class="data-card report-filters">
+      <div class="report-filter-grid">
+        <label class="report-filter-field report-search-field" for="rpt-search"><span>بحث في السجل</span><span class="report-search-control"><i class="fas fa-search"></i><input type="search" id="rpt-search" class="form-control" placeholder="اسم المستخدم، الوحدة، أو الوصف" oninput="auditReports.filterLocal()"></span></label>
+        <label class="report-filter-field" for="rpt-action"><span>نوع الإجراء</span><select id="rpt-action" class="form-select" onchange="auditReports.load()"></select></label>
+        <label class="report-filter-field" for="rpt-date-from"><span>من تاريخ</span><input type="date" id="rpt-date-from" class="form-control" onchange="auditReports.load()"></label>
+        <label class="report-filter-field" for="rpt-date-to"><span>إلى تاريخ</span><input type="date" id="rpt-date-to" class="form-control" onchange="auditReports.load()"></label>
+        <button class="btn btn-outline-secondary report-reset" type="button" onclick="auditReports.resetFilters()"><i class="fas fa-filter-circle-xmark"></i> مسح الفلاتر</button>
       </div>
     </div>
-    <!-- Report Stats -->
-    <div id="reportStats" style="display:none; margin-bottom:12px"></div>
-    <!-- Report Table -->
-    <div class="data-card">
+    <div id="reportStats" class="report-summary-grid" aria-live="polite"></div>
+    <div class="report-analysis-grid">
+      <section class="data-card report-analysis-card"><div class="data-card-header"><div><div class="data-card-title"><i class="fas fa-chart-pie"></i> الإجراءات حسب النوع</div><div class="dashboard-card-note">حسب الفلاتر الحالية</div></div></div><div id="report-action-breakdown" class="report-action-breakdown"></div></section>
+      <section class="data-card report-analysis-card"><div class="data-card-header"><div><div class="data-card-title"><i class="fas fa-layer-group"></i> أكثر الوحدات نشاطاً</div><div class="dashboard-card-note">أعلى خمس وحدات</div></div></div><div id="report-module-breakdown" class="report-module-breakdown"></div></section>
+    </div>
+    <div class="data-card report-table-card">
       <div class="data-card-header">
-        <div class="data-card-title" id="reportTitle"><i class="fas fa-history"></i> سجل التدقيق</div>
-        <div class="pagination-info" id="rpt-pagination-info">عرض 0 من 0 سجل</div>
+        <div><div class="data-card-title" id="reportTitle"><i class="fas fa-history"></i> سجل التدقيق</div><div class="dashboard-card-note" id="rpt-pagination-info">عرض 0 من 0 سجل</div></div>
+        <span class="report-live-badge"><span></span> سجل مباشر</span>
       </div>
       <div class="table-wrapper" id="reportTableWrapper">
         <table class="custom-table" id="reportTable">
@@ -826,7 +750,6 @@
   <script src="{% static 'vendor/jspdf/jspdf.umd.min.js' %}"></script>
 
 <script src="{% static 'js/audit-reports.js' %}?v=1"></script>
-<script src="{% static 'js/modules/module_1.js' %}?v=1"></script>
 <script src="{% static 'js/modules/cipherlab.js' %}?v=1"></script>
 <script src="{% static 'js/report-settings.js' %}?v=1"></script>
 <script src="{% static 'js/accounting-settings.js' %}?v=1"></script>

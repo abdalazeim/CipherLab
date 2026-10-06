@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.modules.example",
-    "apps.modules.module_1",
     "apps.modules.cipherlab.apps.CipherLabConfig",
 ]
 

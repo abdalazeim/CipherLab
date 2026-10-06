@@ -5,7 +5,11 @@ via ``register_dashboard_stats_provider``. This keeps Core completely free
 of any business domain knowledge.
 """
 
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 from django.http import JsonResponse
 from django.utils import timezone
 
@@ -54,10 +58,36 @@ def _latest_audit():
     ]
 
 
+def _audit_activity():
+    today = timezone.localdate()
+    start_date = today - timedelta(days=6)
+    daily_counts = {
+        item["day"]: item["total"]
+        for item in AuditLog.objects.filter(created_at__date__gte=start_date)
+        .annotate(day=TruncDate("created_at"))
+        .values("day")
+        .annotate(total=Count("id"))
+        .order_by("day")
+    }
+    action_counts = dict(
+        AuditLog.objects.filter(created_at__date__gte=start_date)
+        .values_list("action")
+        .annotate(total=Count("id"))
+    )
+    return {
+        "audit_activity": [
+            {"date": (start_date + timedelta(days=offset)).isoformat(), "total": daily_counts.get(start_date + timedelta(days=offset), 0)}
+            for offset in range(7)
+        ],
+        "audit_actions": action_counts,
+    }
+
+
 @api_login_required
 def dashboard_stats(request):
     stats = _system_stats()
     stats["latest_audit"] = _latest_audit()
+    stats.update(_audit_activity())
     for provider in _stats_providers:
         try:
             stats.update(provider(request))

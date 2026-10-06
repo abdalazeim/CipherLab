@@ -56,7 +56,6 @@ function applyNavPermissionFilter() {
 const NAV_ITEMS = [
   { section: 'القوائم الرئيسية' },
   { id: 'dashboard', label: 'لوحة التحكم', icon: 'fa-th-large', perm: 'nav_dashboard' },
-  { id: 'module_1', label: 'مديول -1', icon: 'fa-cubes', perm: 'nav_module_1' },
   { id: 'cipherlab', label: 'مختبر التشفير', icon: 'fa-user-secret', perm: 'nav_cipherlab' },
   { id: 'reports', label: 'التقارير', icon: 'fa-chart-pie', perm: 'nav_reports' },
   { section: 'الإعدادات العامة' },
@@ -67,7 +66,6 @@ const NAV_ITEMS = [
 
 const PAGE_TITLES = {
   dashboard: 'لوحة التحكم',
-  module_1: 'مديول -1',
   cipherlab: 'مختبر التشفير',
   reports: 'التقارير',
   settings: 'الإعدادات العامة',

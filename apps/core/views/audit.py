@@ -5,7 +5,7 @@ reports page can render a generic "سجل التدقيق" view without any busin
 domain knowledge.
 """
 
-from django.db.models import Q
+from django.db.models import Count, Q
 
 from apps.core.constants import PermissionCode
 from apps.core.models import AuditLog
@@ -65,4 +65,8 @@ def list_audit_logs(request):
 
     page_obj, meta = paginate_queryset(qs, request, page_size=25)
     data = [_to_dict(e) for e in page_obj.object_list]
+    meta["summary"] = {
+        "actions": list(qs.values("action").annotate(total=Count("id")).order_by("-total")),
+        "modules": list(qs.values("module").annotate(total=Count("id")).order_by("-total")[:5]),
+    }
     return api_response_paginated(data, meta)

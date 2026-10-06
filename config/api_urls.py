@@ -15,6 +15,5 @@ urlpatterns = [
     path("", include("apps.core.api_urls")),
     path("", include("apps.accounts.urls")),
     path("modules/example/", include("apps.modules.example.urls")),
-    path("modules/module_1/", include("apps.modules.module_1.urls")),
     path("modules/cipherlab/", include("apps.modules.cipherlab.urls")),
 ]

@@ -6,6 +6,7 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from apps.accounts.models import User
+from apps.core.models import AuditLog
 
 
 class APISmokeTest(TestCase):
@@ -39,6 +40,20 @@ class APISmokeTest(TestCase):
         code, data = self.jresp(self.client.get("/api/dashboard/stats"))
         self.assertEqual(code, 200)
         self.assertIn("total_users", data)
+        self.assertEqual(len(data["audit_activity"]), 7)
+        self.assertIn("audit_actions", data)
+
+    def test_audit_logs_include_filtered_summaries(self):
+        AuditLog.objects.create(
+            user=self.user,
+            action=AuditLog.Action.CREATE,
+            module="reports-test",
+            object_repr="Summary record",
+        )
+        code, data = self.jresp(self.client.get("/api/audit-logs?search=Summary"))
+        self.assertEqual(code, 200)
+        self.assertEqual(data["data"]["meta"]["total"], 1)
+        self.assertEqual(data["data"]["meta"]["summary"]["actions"], [{"action": "create", "total": 1}])
 
     def test_system_settings_crud(self):
         code, data = self.jresp(self.client.get("/api/settings/system"))

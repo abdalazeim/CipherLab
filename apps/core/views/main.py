@@ -19,12 +19,6 @@ def index(request):
                         "active": True,
                     },
                     {
-                        "label": "مديول -1",
-                        "icon": "fa-cubes",
-                        "id": "nav-module_1",
-                        "onclick": "showPage('module_1')",
-                    },
-                    {
                         "label": "مختبر التشفير",
                         "icon": "fa-user-secret",
                         "id": "nav-cipherlab",
