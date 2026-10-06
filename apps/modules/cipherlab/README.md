@@ -1,0 +1,19 @@
+# CipherLab Module
+
+CipherLab ports algorithms present in `PEncrypt/src` to the Django module architecture. The service layer separates cipher processing from forms, views, and templates. APIs are mounted at `/api/modules/cipherlab/` and `/api/v1/modules/cipherlab/`.
+
+## Compatibility notes
+
+- Caesar preserves Java's per-character arithmetic, including its unusual treatment of spaces and punctuation. `caesar_ascii` ports the separate 85-character alphabet demo.
+- Monoalphabetic uses the exact Java substitution table and emits a NUL character for inputs absent from that table. Vigenere uppercases the text and discards non-ASCII letters.
+- Rail Fence is the source's column-fill matrix, not the common zigzag algorithm. The Java code silently ignores any input tail beyond `floor(length / depth) * depth`; this port keeps that behavior.
+- Playfair uses the Java 5x5 alphabet with `j` omitted, inserts `x` around duplicate letters, and preserves filler characters when decrypting. The Java formatter crashes on odd-length input before its later padding step; the port completes that documented padding instead. Hill uses the Java row-major key matrix and block multiplication, pads with `x`, and applies the inverse key for decryption; Java only printed the inverse key and did not implement its decrypt menu item.
+- `Atbash.java` actually declares `Tchar3p`, which adds 2 to each character; an Atbash algorithm is absent from the sources. `rot13` preserves punctuation and non-Latin characters.
+- The seeded Vernam routine uses Java's `Random(7)` stream and has encryption only. Its random sequence is reproducible, but the implementation exposes no inverse routine. `Vernam` itself is a separate one-time-pad addition routine requiring lowercase text/key of equal length.
+- `OneTimePad` and `OneTimePadCipher` use a fixed repeating `1010101` mask, not a true one-time pad. The source helper's binary arrays assume 7-bit inputs and contain fragile indexing for characters below ASCII 64. Encryption follows its seven-bit bit-array logic; its decoder's fixed-size char buffer retains trailing NULs, so the original Java decryption may fail to parse its own output. The port accepts the intended space-separated bit groups and decodes them.
+- DES uses `DES/CBC/PKCS5Padding` and the exact fixed IV `{11,22,33,44,99,88,77,66}`. Supply the original 8-byte key. The Java main generates a random key and discards it, so ciphertext created there cannot be recovered unless that key was separately retained. Django accepts the key explicitly and represents ciphertext as Base64.
+- RSA preserves Java's signed, big-endian `BigInteger(byte[])` and `modPow` behavior. Supply `e=<integer>,n=<integer>` for encryption or `d=<integer>,n=<integer>` for decryption. Its random generated keys were not saved by the Java UI.
+- DSA uses SHA1 and DER signatures, matching `SHA1withDSA`. Signing takes Base64 DER PKCS8 private key and returns Base64 signature. Verification takes Base64 DER public key and the Base64 signature in the parameter field. Java's standalone program only wrote files and had no verify flow.
+- XOR shares use the legacy XOR-of-character-bytes model and newline-separated Base64 so arbitrary bytes survive text transport; the old ASCII conversion was not portable for arbitrary random bytes.
+
+The Java project has no tests or external libraries, and `javac` is not available in this environment. Some source files also contain unsupported placeholders or invalid Swing stubs. Operation history records only algorithm, action, lengths, user, and time; it never stores text, ciphertext, or keys.

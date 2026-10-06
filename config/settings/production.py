@@ -1,0 +1,38 @@
+from .base import *  # noqa: F401, F403
+
+DEBUG = False
+
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable is required in production!")
+
+ALLOWED_HOSTS = list(
+    dict.fromkeys(
+        list(ALLOWED_HOSTS)
+        + [".onrender.com", "gds.onrender.com"]
+    )
+)
+
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_HSTS_SECONDS = env("SECURE_HSTS_SECONDS")
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
+CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 86400
+
+_trusted = env("CSRF_TRUSTED_ORIGINS")
+if _trusted:
+    CSRF_TRUSTED_ORIGINS = _trusted.split(",")
+_cors = env("CORS_ALLOWED_ORIGINS")
+if _cors:
+    CORS_ALLOWED_ORIGINS = _cors.split(",")
+    CORS_ALLOW_CREDENTIALS = True

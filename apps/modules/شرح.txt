@@ -1,0 +1,52 @@
+apps/modules/ هو "غرفة الأجهزة" للنظام — كل مجال عمل في النظام = وحدة مستقلة داخل هذا المجلد. في المشاريع الكبيرة هذا هو Monolith مُهيكل Modular بدل تطبيق عملاق واحد:
+
+الفكرة: بدلاً من ملف واحد كبير بـ "أوامر الشراء + العملاء + المخزون + الشؤون المالية + HR..."، كل مجال يعيش معزولاً:
+
+apps/modules/
+├── example/          # مرجع
+├── sales/            # المبيعات
+├── purchasing/       # المشتريات
+├── hr/               # الموارد البشرية
+└── inventory/        # المخزون
+ماذا هذا قوي في المشاريع الكبيرة:
+
+عزل كامل — الوحدة لا ترى داخل وحدة أخرى إلا عبر API/خدمة. تغيير في sales لا يكسر hr.
+فرق موازية — فريق يعمل على purchasing وفريق على hr في نفس الوقت بلا صراع ملفات.
+صلاحيات لكل مجال — كل وحدة تولّد صلاحياتها (sales_view, sales_manage, nav_sales) تظهر تلقائياً في شاشة إدارة المستخدمين.
+سجل تدقيق موحّد — كل وحدة تكتب في AuditLog بمعرّف وحدتها، فالتقارير تعرض نشاط النظام كله.
+إزالة آمنة — الوحدة قابلة للحذف أو التجميد (بحذف مجلدها وسطر INSTALLED_APPS فقط) دون مساس بالباقي.
+توسيع بلا حدود — عند الحاجة لمجال جديد: startmodule يولّده كاملاً خلال ثوانٍ، بدل إضافة كود متفرق في 15 مكاناً.
+المقارنة السريعة:
+
+مشروع صغير/نظام واحد بسيط → تكفي الصفحات الثابتة (index.html + showPage).
+مشروع كبير/عدة مجالات → وحدة لكل مجال.
+الحد الصحي: الوحدات تعتمد على core و accounts فقط — إذا بدأت وحدة تعتمد على وحدة أخرى، فهذه إشارة أنها كانت يجب أن تكون في core.
+
+
+
+المسار يُبنى من 3 طبقات:
+
+1. الجذر — config/api_urls.py (يُركّب وحدات الأعمال):
+
+path("modules/module_1/", include("apps.modules.module_1.urls")),
+2. مسارات الوحدة — apps/modules/module_1/urls.py
+
+3. الدوال — apps/modules/module_1/views/module_1_views.py
+
+أعرضهما لك:
+
+هذه خريطة المسار GET /api/modules/module_1/items/:
+
+الملف	الدور
+config/api_urls.py	يركّب modules/module_1/ → apps.modules.module_1.urls
+apps/modules/module_1/urls.py	يحدد items/ → views.list_items
+apps/modules/module_1/views/module_1_views.py:23	الدالة list_items — تجلب البيانات وتعيدها بصفحات JSON
+والنقاط الكاملة المتاحة:
+
+GET /api/modules/module_1/items/ — القائمة (بحث + ترقيم)
+POST /api/modules/module_1/items/create/ — إضافة
+GET /api/modules/module_1/items/<id>/ — تفاصيل
+PUT /api/modules/module_1/items/<id>/update/ — تعديل
+DELETE /api/modules/module_1/items/<id>/delete/ — حذف
+GET /api/modules/module_1/stats/ — إحصائيات
+كلها محمية بصلاحيات module_1_view (عرض) وmodule_1_manage (إدارة). المتصفح/الواجهة تناديها من static/js/modules/module_1.js

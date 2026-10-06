@@ -1,0 +1,10 @@
+الوحدة "مديول -1" أُنشئت كوحدة أعمال حقيقية في apps/modules/module_1/ (عبر python manage.py startmodule module_1 --label "مديول -1").
+
+التغييرات:
+- apps/modules/module_1/ — النموذج + الخدمة + المستودع + API + الصلاحيات + الاختبارات + الهجرة
+- config/settings/base.py — التسجيل في INSTALLED_APPS
+- config/api_urls.py — المسار /api/modules/module_1/
+- apps/core/views/main.py — عنصر الشريط الجانبي بعد لوحة التحكم
+- static/js/main.js — تسجيل الصفحة في التنقل والعناوين
+- templates/pages/index.html — صفحة الوحدة
+- apps/core/management/commands/startmodule.py — إصلاح: استبدال @@LABEL@@ في الملفات المولّدة، وتوليد الهجرة في عملية فرعية

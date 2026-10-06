@@ -1,0 +1,19 @@
+[Unit]
+Description=General Development System (GDS) — Gunicorn
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+RuntimeDirectory=gds
+WorkingDirectory=/opt/gds
+EnvironmentFile=/opt/gds/.env
+ExecStart=/opt/gds/venv/bin/gunicorn config.wsgi:application --config gunicorn.conf.py
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

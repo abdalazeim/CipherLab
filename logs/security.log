@@ -1,0 +1,81 @@
+2026-08-10 17:14:47 ERROR [django.security.DisallowedHost] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+2026-08-10 17:14:47 ERROR [django.security.DisallowedHost] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+2026-08-10 17:27:55 ERROR [django.security.DisallowedHost] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+2026-08-10 17:27:55 ERROR [django.security.DisallowedHost] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "D:\Project Django Frameworks\GeneralDevelopmentSystem\GDS-Template\venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+2026-08-11 09:40:00 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 09:40:14 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 09:40:30 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 09:40:35 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 10:50:54 ERROR [django.security.DisallowedHost] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\user176\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user176\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\user176\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\user176\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 203, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+2026-08-11 11:02:33 WARNING [apps.security] login_failed | ip=127.0.0.1 | path=/api/auth/login | username=admin
+2026-08-11 11:19:11 WARNING [apps.security] login_failed | ip=127.0.0.1 | path=/api/auth/login | username=admin
+2026-08-11 14:08:43 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:09:04 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:12:01 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:25:23 WARNING [apps.security] login_failed | ip=127.0.0.1 | path=/api/auth/login | username=admin
+2026-08-11 14:26:28 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:35:17 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:38:46 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:42:58 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 14:44:25 WARNING [apps.security] login_failed | ip=127.0.0.1 | path=/api/auth/login | username=admin
+2026-08-11 14:44:30 WARNING [apps.security] login_failed | ip=127.0.0.1 | path=/api/auth/login | username=admin
+2026-08-11 15:28:09 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-11 18:42:20 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-12 09:20:40 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-12 09:37:46 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-08-12 10:53:27 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 18:09:23 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 18:19:35 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 18:34:06 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 18:37:04 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
+2026-10-06 18:41:15 WARNING [apps.security] permission_denied | user=viewer@2 | ip=127.0.0.1 | path=/api/modules/example/items/create/ | required=example_manage
